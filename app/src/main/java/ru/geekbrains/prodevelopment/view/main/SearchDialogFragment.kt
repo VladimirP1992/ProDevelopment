@@ -1,4 +1,4 @@
-package ru.geekbrains.prodevelopment.ui.search
+package ru.geekbrains.prodevelopment.view.main
 
 import android.os.Bundle
 import android.text.Editable

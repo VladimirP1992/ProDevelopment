@@ -1,4 +1,4 @@
-package ru.geekbrains.prodevelopment.mvp.presenter
+package ru.geekbrains.prodevelopment.viewmodel.interactor
 
 import io.reactivex.Observable
 
