@@ -1,4 +1,4 @@
-package ru.geekbrains.prodevelopment.mvp.model.repository
+package ru.geekbrains.prodevelopment.model.repository
 
 import io.reactivex.Observable
 
