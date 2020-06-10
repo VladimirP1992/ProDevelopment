@@ -1,4 +1,4 @@
-package ru.geekbrains.prodevelopment.mvp.model.datasource
+package ru.geekbrains.prodevelopment.model.datasource
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import io.reactivex.Observable
@@ -7,12 +7,14 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.geekbrains.prodevelopment.mvp.model.data.SearchResult
+import ru.geekbrains.prodevelopment.model.data.DataModel
+import ru.geekbrains.prodevelopment.model.data.api.ApiService
+import ru.geekbrains.prodevelopment.model.data.api.BaseInterceptor
 
 
-class RetrofitImplementation : DataSource<List<SearchResult>> {
+class RetrofitImplementation : DataSource<List<DataModel>> {
 
-    override fun getData(word: String): Observable<List<SearchResult>> {
+    override fun getData(word: String): Observable<List<DataModel>> {
         return getService(BaseInterceptor.interceptor).search(word)
     }
 

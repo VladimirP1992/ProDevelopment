@@ -1,4 +1,4 @@
-package ru.geekbrains.prodevelopment.mvp.model.data
+package ru.geekbrains.prodevelopment.model.data
 
 import com.google.gson.annotations.SerializedName
 
