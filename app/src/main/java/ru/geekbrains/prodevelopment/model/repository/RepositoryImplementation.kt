@@ -1,13 +1,13 @@
 package ru.geekbrains.prodevelopment.model.repository
 
 import io.reactivex.Observable
-import ru.geekbrains.prodevelopment.model.data.DataModel
+import ru.geekbrains.prodevelopment.model.data.SearchResult
 import ru.geekbrains.prodevelopment.model.datasource.DataSource
 
-class RepositoryImplementation(private val dataSource: DataSource<List<DataModel>>) :
-    IRepository<List<DataModel>> {
+class RepositoryImplementation(private val dataSource: DataSource<List<SearchResult>>) :
+    IRepository<List<SearchResult>> {
 
-    override fun getData(word: String): Observable<List<DataModel>> {
+    override suspend fun getData(word: String): List<SearchResult> {
         return dataSource.getData(word)
     }
 }

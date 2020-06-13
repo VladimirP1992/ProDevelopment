@@ -1,11 +1,10 @@
 package ru.geekbrains.prodevelopment.model.datasource
 
-import io.reactivex.Observable
-import ru.geekbrains.prodevelopment.model.data.DataModel
+import ru.geekbrains.prodevelopment.model.data.SearchResult
 
-class RoomDataBaseImplementation : DataSource<List<DataModel>> {
+class RoomDataBaseImplementation : DataSource<List<SearchResult>> {
 
-    override fun getData(word: String): Observable<List<DataModel>> {
+    override suspend fun getData(word: String): List<SearchResult> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
