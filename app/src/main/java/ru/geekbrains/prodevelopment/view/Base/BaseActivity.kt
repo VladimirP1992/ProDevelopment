@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import ru.geekbrains.prodevelopment.R
-import ru.geekbrains.prodevelopment.model.data.AppState
+import ru.geekbrains.prodevelopment.model.data.DataModel
 import ru.geekbrains.prodevelopment.utils.network.isOnline
 import ru.geekbrains.prodevelopment.utils.ui.AlertDialogFragment
 import ru.geekbrains.prodevelopment.viewmodel.BaseViewModel
 import ru.geekbrains.prodevelopment.viewmodel.interactor.IInteractor
 
 
-abstract class BaseActivity<T : AppState, I : IInteractor<T>> : AppCompatActivity() {
+abstract class BaseActivity<T : DataModel, I : IInteractor<T>> : AppCompatActivity() {
 
     abstract val model: BaseViewModel<T>
 

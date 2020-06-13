@@ -1,14 +1,14 @@
 package ru.geekbrains.prodevelopment.utils
 
-import ru.geekbrains.prodevelopment.model.data.AppState
 import ru.geekbrains.prodevelopment.model.data.DataModel
+import ru.geekbrains.prodevelopment.model.data.SearchResult
 import ru.geekbrains.prodevelopment.model.data.Meanings
 
-fun parseSearchResults(state: AppState): AppState {
-    val newSearchResults = arrayListOf<DataModel>()
-    when (state) {
-        is AppState.Success -> {
-            val searchResults = state.data
+fun parseSearchResults(data: DataModel): DataModel {
+    val newSearchResults = arrayListOf<SearchResult>()
+    when (data) {
+        is DataModel.Success -> {
+            val searchResults = data.data
             if (!searchResults.isNullOrEmpty()) {
                 for (searchResult in searchResults) {
                     parseResult(searchResult, newSearchResults)
@@ -17,19 +17,19 @@ fun parseSearchResults(state: AppState): AppState {
         }
     }
 
-    return AppState.Success(newSearchResults)
+    return DataModel.Success(newSearchResults)
 }
 
-private fun parseResult(dataModel: DataModel, newDataModels: ArrayList<DataModel>) {
-    if (!dataModel.text.isNullOrBlank() && !dataModel.meanings.isNullOrEmpty()) {
+private fun parseResult(searchResult: SearchResult, newSearchResults: ArrayList<SearchResult>) {
+    if (!searchResult.text.isNullOrBlank() && !searchResult.meanings.isNullOrEmpty()) {
         val newMeanings = arrayListOf<Meanings>()
-        for (meaning in dataModel.meanings) {
+        for (meaning in searchResult.meanings) {
             if (meaning.translation != null && !meaning.translation.translation.isNullOrBlank()) {
                 newMeanings.add(Meanings(meaning.translation, meaning.imageUrl))
             }
         }
         if (newMeanings.isNotEmpty()) {
-            newDataModels.add(DataModel(dataModel.text, newMeanings))
+            newSearchResults.add(SearchResult(searchResult.text, newMeanings))
         }
     }
 }
