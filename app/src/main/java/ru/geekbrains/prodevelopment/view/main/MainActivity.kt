@@ -4,24 +4,19 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.viewmodel.ext.android.viewModel
 import ru.geekbrains.prodevelopment.R
-import ru.geekbrains.prodevelopment.model.data.AppState
 import ru.geekbrains.prodevelopment.model.data.DataModel
+import ru.geekbrains.prodevelopment.model.data.SearchResult
 import ru.geekbrains.prodevelopment.utils.network.isOnline
 import ru.geekbrains.prodevelopment.view.Base.BaseActivity
 import ru.geekbrains.prodevelopment.view.main.adapter.MainAdapter
 import ru.geekbrains.prodevelopment.viewmodel.MainViewModel
 import ru.geekbrains.prodevelopment.viewmodel.interactor.MainInteractor
-import javax.inject.Inject
 
-class MainActivity : BaseActivity<AppState, MainInteractor>() {
-
-    @Inject
-    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+class MainActivity : BaseActivity<DataModel, MainInteractor>() {
 
     override lateinit var model: MainViewModel
     private val adapter: MainAdapter by lazy { MainAdapter(onListItemClickListener) }
@@ -33,7 +28,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         }
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
-            override fun onItemClick(data: DataModel) {
+            override fun onItemClick(data: SearchResult) {
                 Toast.makeText(this@MainActivity, data.text, Toast.LENGTH_SHORT).show()
             }
         }
@@ -50,49 +45,57 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        model = viewModelFactory.create(MainViewModel::class.java)
-        model.subscribe().observe(this@MainActivity, Observer<AppState> { renderData(it) })
-
-        search_fab.setOnClickListener(fabClickListener)
-        main_activity_recyclerview.layoutManager = LinearLayoutManager(applicationContext)
-        main_activity_recyclerview.adapter = adapter
+        iniViewModel()
+        initViews()
     }
 
-    override fun renderData(appState: AppState) {
-        when (appState) {
-            is AppState.Success -> {
+    override fun renderData(dataModel: DataModel) {
+        when (dataModel) {
+            is DataModel.Success -> {
                 showViewWorking()
-                val data = appState.data
-                if (data.isNullOrEmpty()) {
+                val searchResult = dataModel.data
+                if (searchResult.isNullOrEmpty()) {
                     showAlertDialog(
-                        getString(R.string.dialog_tittle_sorry),
+                        getString(R.string.dialog_title_sorry),
                         getString(R.string.empty_server_response_on_success)
                     )
                 } else {
-                    adapter.setData(data)
+                    adapter.setData(searchResult)
                 }
             }
-            is AppState.Loading -> {
+            is DataModel.Loading -> {
                 showViewLoading()
-                if (appState.progress != null) {
+                if (dataModel.progress != null) {
                     progress_bar_horizontal.visibility = View.VISIBLE
                     progress_bar_round.visibility = View.GONE
-                    progress_bar_horizontal.progress = appState.progress
+                    progress_bar_horizontal.progress = dataModel.progress
                 } else {
                     progress_bar_horizontal.visibility = View.GONE
                     progress_bar_round.visibility = View.VISIBLE
                 }
             }
-            is AppState.Error -> {
+            is DataModel.Error -> {
                 showViewWorking()
-                showAlertDialog(getString(R.string.error_stub), appState.error.message)
+                showAlertDialog(getString(R.string.error_stub), dataModel.error.message)
             }
         }
+    }
+
+    private fun iniViewModel() {
+        if (main_activity_recyclerview.adapter != null) {
+            throw IllegalStateException("The ViewModel should be initialised first")
+        }
+        val viewModel: MainViewModel by viewModel()
+        model = viewModel
+        model.subscribe().observe(this@MainActivity, Observer<DataModel> { renderData(it) })
+    }
+
+    private fun initViews() {
+        search_fab.setOnClickListener(fabClickListener)
+        main_activity_recyclerview.layoutManager = LinearLayoutManager(applicationContext)
+        main_activity_recyclerview.adapter = adapter
     }
 
     private fun showViewWorking() {
@@ -104,6 +107,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     }
 
     companion object {
-        private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "74a54328-5d62-46bf-ab6b-cbf5fgt0-092395"
+        private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG =
+            "74a54328-5d62-46bf-ab6b-cbf5fgt0-092395"
     }
 }
