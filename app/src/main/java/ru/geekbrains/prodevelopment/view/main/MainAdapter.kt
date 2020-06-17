@@ -1,4 +1,4 @@
-package ru.geekbrains.prodevelopment.view.main.adapter
+package ru.geekbrains.prodevelopment.view.main
 
 import android.view.LayoutInflater
 import android.view.View
