@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.geekbrains.prodevelopment.model.data.DataModel
-import ru.geekbrains.prodevelopment.utils.parseSearchResults
+import ru.geekbrains.prodevelopment.utils.parseOnlineSearchResults
 import ru.geekbrains.prodevelopment.viewmodel.interactor.MainInteractor
 
 class MainViewModel(private val interactor: MainInteractor) :
@@ -25,7 +25,7 @@ class MainViewModel(private val interactor: MainInteractor) :
 
     //Doesn't have to use withContext for Retrofit call if you use .addCallAdapterFactory(CoroutineCallAdapterFactory()). The same goes for Room
     private suspend fun startInteractor(word: String, isOnline: Boolean) = withContext(Dispatchers.IO) {
-        _mutableLiveData.postValue(parseSearchResults(interactor.getData(word, isOnline)))
+        _mutableLiveData.postValue(parseOnlineSearchResults(interactor.getData(word, isOnline)))
     }
 
     override fun handleError(error: Throwable) {
@@ -33,7 +33,7 @@ class MainViewModel(private val interactor: MainInteractor) :
     }
 
     override fun onCleared() {
-        _mutableLiveData.value = DataModel.Success(null)
+        _mutableLiveData.value = DataModel.Success(null)//TODO Workaround. Set View to original state
         super.onCleared()
     }
 }
