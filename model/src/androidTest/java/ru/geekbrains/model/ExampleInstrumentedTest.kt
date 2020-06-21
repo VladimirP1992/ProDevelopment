@@ -1,8 +1,7 @@
-package ru.geekbrains.prodevelopment
+package ru.geekbrains.model
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -19,6 +18,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("ru.geekbrains.prodevelopment", appContext.packageName)
+        assertEquals("ru.geekbrains.model.test", appContext.packageName)
     }
 }
