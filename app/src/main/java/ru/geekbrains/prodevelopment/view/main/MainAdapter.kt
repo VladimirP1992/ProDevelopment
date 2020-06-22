@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_translation.view.*
 import ru.geekbrains.prodevelopment.R
-import ru.geekbrains.prodevelopment.model.data.SearchResult
+import ru.geekbrains.model.data.SearchResult
 import ru.geekbrains.prodevelopment.utils.convertMeaningsToString
 
 class MainAdapter(private var onListItemClickListener: OnListItemClickListener) :

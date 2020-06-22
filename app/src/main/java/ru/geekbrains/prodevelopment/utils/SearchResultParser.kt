@@ -1,16 +1,11 @@
 package ru.geekbrains.prodevelopment.utils
 
-import ru.geekbrains.prodevelopment.model.data.DataModel
-import ru.geekbrains.prodevelopment.model.data.SearchResult
-import ru.geekbrains.prodevelopment.model.data.Meanings
-import ru.geekbrains.prodevelopment.room.HistoryEntity
+import ru.geekbrains.model.data.DataModel
+import ru.geekbrains.model.data.Meanings
+import ru.geekbrains.model.data.SearchResult
 
 fun parseOnlineSearchResults(data: DataModel): DataModel {
     return DataModel.Success(mapResult(data, true))
-}
-
-fun parseLocalSearchResults(data: DataModel): DataModel {
-    return DataModel.Success(mapResult(data, false))
 }
 
 private fun mapResult(
@@ -29,60 +24,38 @@ private fun mapResult(
 private fun getSuccessResultData(
     data: DataModel.Success,
     isOnline: Boolean,
-    newSearchResults: ArrayList<SearchResult>
+    newDataModels: ArrayList<SearchResult>
 ) {
-    val searchResults: List<SearchResult> = data.data as List<SearchResult>
-    if (searchResults.isNotEmpty()) {
+    val dataModels: List<SearchResult> = data.data as List<SearchResult>
+    if (dataModels.isNotEmpty()) {
         if (isOnline) {
-            for (searchResult in searchResults) {
-                parseOnlineResult(searchResult, newSearchResults)
+            for (searchResult in dataModels) {
+                parseOnlineResult(searchResult, newDataModels)
             }
         } else {
-            for (searchResult in searchResults) {
-                newSearchResults.add(SearchResult(searchResult.text, arrayListOf()))
+            for (searchResult in dataModels) {
+                newDataModels.add(SearchResult(searchResult.text, arrayListOf()))
             }
         }
     }
 }
 
-private fun parseOnlineResult(searchResult: SearchResult, newSearchResults: ArrayList<SearchResult>) {
-    if (!searchResult.text.isNullOrBlank() && !searchResult.meanings.isNullOrEmpty()) {
+private fun parseOnlineResult(
+    dataModel: SearchResult,
+    newDataModels: ArrayList<SearchResult>
+) {
+    if (!dataModel.text.isNullOrBlank() && !dataModel.meanings.isNullOrEmpty()) {
         val newMeanings = arrayListOf<Meanings>()
-        for (meaning in searchResult.meanings) {
-            if (meaning.translation != null && !meaning.translation.translation.isNullOrBlank()) {
+        for (meaning in dataModel.meanings!!) {
+            if (meaning.translation != null && !meaning.translation!!.translation.isNullOrBlank()) {
                 newMeanings.add(Meanings(meaning.translation, meaning.imageUrl))
             }
         }
         if (newMeanings.isNotEmpty()) {
-            newSearchResults.add(SearchResult(searchResult.text, newMeanings))
+            newDataModels.add(SearchResult(dataModel.text, newMeanings))
         }
     }
 }
-
-fun mapHistoryEntityToSearchResult(list: List<HistoryEntity>): List<SearchResult> {
-    val searchResult = ArrayList<SearchResult>()
-    if (!list.isNullOrEmpty()) {
-        for (entity in list) {
-            searchResult.add(SearchResult(entity.word, null))
-        }
-    }
-    return searchResult
-}
-
-fun convertDataModelSuccessToEntity(dataModel: DataModel): HistoryEntity? {
-    return when (dataModel) {
-        is DataModel.Success -> {
-            val searchResult = dataModel.data
-            if (searchResult.isNullOrEmpty() || searchResult[0].text.isNullOrEmpty()) {
-                null
-            } else {
-                HistoryEntity(searchResult[0].text!!, null)
-            }
-        }
-        else -> null
-    }
-}
-
 
 fun convertMeaningsToString(meanings: List<Meanings>): String {
     var meaningsSeparatedByComma = String()

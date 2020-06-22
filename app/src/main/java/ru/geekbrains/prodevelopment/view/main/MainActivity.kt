@@ -9,15 +9,13 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import ru.geekbrains.prodevelopment.R
-import ru.geekbrains.prodevelopment.model.data.DataModel
-import ru.geekbrains.prodevelopment.model.data.SearchResult
-import ru.geekbrains.prodevelopment.utils.convertMeaningsToString
-import ru.geekbrains.prodevelopment.utils.network.isOnline
-import ru.geekbrains.prodevelopment.view.Base.BaseActivity
+import ru.geekbrains.model.data.DataModel
+import ru.geekbrains.model.data.SearchResult
+import ru.geekbrains.utils.network.isOnline
+import ru.geekbrains.core.BaseActivity
 import ru.geekbrains.prodevelopment.view.descriptionscreen.DescriptionActivity
-import ru.geekbrains.prodevelopment.view.history.HistoryActivity
-import ru.geekbrains.prodevelopment.viewmodel.MainViewModel
-import ru.geekbrains.prodevelopment.viewmodel.interactor.MainInteractor
+import ru.geekbrains.historyscreen.view.history.HistoryActivity
+import ru.geekbrains.prodevelopment.utils.convertMeaningsToString
 
 private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "74a54328-5d62-46bf-ab6b-cbf5fgt0-092395"
 
@@ -39,7 +37,7 @@ class MainActivity : BaseActivity<DataModel, MainInteractor>() {
                         this@MainActivity,
                         data.text!!,
                         convertMeaningsToString(data.meanings!!),
-                        data.meanings[0].imageUrl
+                        data.meanings!![0].imageUrl
                     )
                 )
             }
@@ -47,7 +45,8 @@ class MainActivity : BaseActivity<DataModel, MainInteractor>() {
     private val onSearchClickListener: SearchDialogFragment.OnSearchClickListener =
         object : SearchDialogFragment.OnSearchClickListener {
             override fun onClick(searchWord: String) {
-                isNetworkAvailable = isOnline(applicationContext)
+                isNetworkAvailable =
+                    isOnline(applicationContext)
                 if (isNetworkAvailable) {
                     model.getData(searchWord, isNetworkAvailable)
                 } else {
