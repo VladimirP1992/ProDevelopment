@@ -1,8 +1,8 @@
 package ru.geekbrains.repository
 
-import ru.geekbrains.model.data.DataModel
+import ru.geekbrains.model.data.AppState
 
 interface DataSourceLocal<T> : DataSource<T> {
 
-    suspend fun saveToDB(dataModel: DataModel)
+    suspend fun saveToDB(appState: AppState)
 }

@@ -1,44 +1,41 @@
 package ru.geekbrains.core
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.loading_layout.*
 import ru.geekbrains.core.viewmodel.BaseViewModel
 import ru.geekbrains.core.viewmodel.IInteractor
+import ru.geekbrains.model.data.AppState
 import ru.geekbrains.model.data.DataModel
-import ru.geekbrains.model.data.SearchResult
 import ru.geekbrains.utils.network.isOnline
 import ru.geekbrains.utils.ui.AlertDialogFragment
 
 private const val DIALOG_FRAGMENT_TAG = "74a54328-5d62-46bf-ab6b-cbf5d8c79522"
 
-abstract class BaseActivity<T : DataModel, I : IInteractor<T>> : AppCompatActivity() {
+abstract class BaseActivity<T : AppState, I : IInteractor<T>> : AppCompatActivity() {
 
     abstract val model: BaseViewModel<T>
     protected var isNetworkAvailable: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        isNetworkAvailable =
-            isOnline(applicationContext)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isNetworkAvailable = isOnline(applicationContext)
     }
 
     override fun onResume() {
         super.onResume()
-        isNetworkAvailable =
-            isOnline(applicationContext)
+        isNetworkAvailable = isOnline(applicationContext)
         if (!isNetworkAvailable && isDialogNull()) {
             showNoInternetConnectionDialog()
         }
     }
 
-    protected fun renderData(dataModel: T) {
-        when (dataModel) {
-            is DataModel.Success -> {
+    protected fun renderData(appState: T) {
+        when (appState) {
+            is AppState.Success -> {
                 showViewWorking()
-                dataModel.data?.let {
+                appState.data?.let {
                     if (it.isEmpty()) {
                         showAlertDialog(
                             getString(R.string.dialog_tittle_sorry),
@@ -49,20 +46,20 @@ abstract class BaseActivity<T : DataModel, I : IInteractor<T>> : AppCompatActivi
                     }
                 }
             }
-            is DataModel.Loading -> {
+            is AppState.Loading -> {
                 showViewLoading()
-                if (dataModel.progress != null) {
+                if (appState.progress != null) {
                     progress_bar_horizontal.visibility = View.VISIBLE
                     progress_bar_round.visibility = View.GONE
-                    progress_bar_horizontal.progress = dataModel.progress!!
+                    progress_bar_horizontal.progress = appState.progress!!
                 } else {
                     progress_bar_horizontal.visibility = View.GONE
                     progress_bar_round.visibility = View.VISIBLE
                 }
             }
-            is DataModel.Error -> {
+            is AppState.Error -> {
                 showViewWorking()
-                showAlertDialog(getString(R.string.error_stub), dataModel.error.message)
+                showAlertDialog(getString(R.string.error_stub), appState.error.message)
             }
         }
     }
@@ -75,9 +72,8 @@ abstract class BaseActivity<T : DataModel, I : IInteractor<T>> : AppCompatActivi
     }
 
     protected fun showAlertDialog(title: String?, message: String?) {
-        AlertDialogFragment.newInstance(title, message).show(supportFragmentManager,
-            DIALOG_FRAGMENT_TAG
-        )
+        AlertDialogFragment.newInstance(title, message)
+            .show(supportFragmentManager, DIALOG_FRAGMENT_TAG)
     }
 
     private fun showViewWorking() {
@@ -92,5 +88,5 @@ abstract class BaseActivity<T : DataModel, I : IInteractor<T>> : AppCompatActivi
         return supportFragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG) == null
     }
 
-    abstract fun setDataToAdapter(data: List<SearchResult>)
+    abstract fun setDataToAdapter(data: List<DataModel>)
 }

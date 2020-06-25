@@ -1,18 +1,16 @@
 package ru.geekbrains.repository
 
+import ru.geekbrains.model.data.AppState
 import ru.geekbrains.model.data.DataModel
-import ru.geekbrains.model.data.SearchResult
-import ru.geekbrains.repository.DataSourceLocal
-import ru.geekbrains.repository.IRepositoryLocal
 
-class RepositoryImplementationLocal(private val dataSource: DataSourceLocal<List<SearchResult>>) :
-    IRepositoryLocal<List<SearchResult>> {
+class RepositoryImplementationLocal(private val dataSource: DataSourceLocal<List<DataModel>>) :
+    IRepositoryLocal<List<DataModel>> {
 
-    override suspend fun getData(word: String): List<SearchResult> {
+    override suspend fun getData(word: String): List<DataModel> {
         return dataSource.getData(word)
     }
 
-    override suspend fun saveToDB(dataModel: DataModel) {
-        dataSource.saveToDB(dataModel)
+    override suspend fun saveToDB(appState: AppState) {
+        dataSource.saveToDB(appState)
     }
 }

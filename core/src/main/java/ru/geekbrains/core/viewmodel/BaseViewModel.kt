@@ -3,9 +3,9 @@ package ru.geekbrains.core.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
-import ru.geekbrains.model.data.DataModel
+import ru.geekbrains.model.data.AppState
 
-abstract class BaseViewModel<T : DataModel>(
+abstract class BaseViewModel<T : AppState>(
     protected open val _mutableLiveData: MutableLiveData<T> = MutableLiveData()
 ) : ViewModel() {
 

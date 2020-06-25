@@ -1,25 +1,25 @@
 package ru.geekbrains.prodevelopment.view.main
 
 import ru.geekbrains.core.viewmodel.IInteractor
+import ru.geekbrains.model.data.AppState
 import ru.geekbrains.model.data.DataModel
-import ru.geekbrains.model.data.SearchResult
 import ru.geekbrains.repository.IRepository
 import ru.geekbrains.repository.IRepositoryLocal
 
 
 class MainInteractor(
-    private val repositoryRemote: IRepository<List<SearchResult>>,
-    private val repositoryLocal: IRepositoryLocal<List<SearchResult>>
-) : IInteractor<DataModel> {
+    private val repositoryRemote: IRepository<List<DataModel>>,
+    private val repositoryLocal: IRepositoryLocal<List<DataModel>>
+) : IInteractor<AppState> {
 
-    override suspend fun getData(word: String, fromRemoteSource: Boolean): DataModel {
-        val dataModel: DataModel
+    override suspend fun getData(word: String, fromRemoteSource: Boolean): AppState {
+        val appState: AppState
         if (fromRemoteSource) {
-            dataModel = DataModel.Success(repositoryRemote.getData(word))
-            repositoryLocal.saveToDB(dataModel)
+            appState = AppState.Success(repositoryRemote.getData(word))
+            repositoryLocal.saveToDB(appState)
         } else {
-            dataModel = DataModel.Success(repositoryLocal.getData(word))
+            appState = AppState.Success(repositoryLocal.getData(word))
         }
-        return dataModel
+        return appState
     }
 }

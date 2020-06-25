@@ -4,37 +4,33 @@ import androidx.lifecycle.LiveData
 import kotlinx.coroutines.launch
 import ru.geekbrains.core.viewmodel.BaseViewModel
 import ru.geekbrains.historyscreen.parseLocalSearchResults
-import ru.geekbrains.model.data.DataModel
+import ru.geekbrains.model.data.AppState
 
 class HistoryViewModel(private val interactor: HistoryInteractor) :
-    BaseViewModel<DataModel>() {
+    BaseViewModel<AppState>() {
 
-    private val liveDataForViewToObserve: LiveData<DataModel> = _mutableLiveData
+    private val liveDataForViewToObserve: LiveData<AppState> = _mutableLiveData
 
-    fun subscribe(): LiveData<DataModel> {
+    fun subscribe(): LiveData<AppState> {
         return liveDataForViewToObserve
     }
 
     override fun getData(word: String, isOnline: Boolean) {
-        _mutableLiveData.value = DataModel.Loading(null)
+        _mutableLiveData.value = AppState.Loading(null)
         cancelJob()
         viewModelCoroutineScope.launch { startInteractor(word, isOnline) }
     }
 
     private suspend fun startInteractor(word: String, isOnline: Boolean) {
-        _mutableLiveData.postValue(
-            parseLocalSearchResults(
-                interactor.getData(word, isOnline)
-            )
-        )
+        _mutableLiveData.postValue(parseLocalSearchResults(interactor.getData(word, isOnline)))
     }
 
     override fun handleError(error: Throwable) {
-        _mutableLiveData.postValue(DataModel.Error(error))
+        _mutableLiveData.postValue(AppState.Error(error))
     }
 
     override fun onCleared() {
-        _mutableLiveData.value = DataModel.Success(null)//Set View to original state in onStop
+        _mutableLiveData.value = AppState.Success(null)//Set View to original state in onStop
         super.onCleared()
     }
 }

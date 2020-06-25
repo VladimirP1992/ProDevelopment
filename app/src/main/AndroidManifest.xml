@@ -25,5 +25,4 @@
             android:name=".view.descriptionscreen.DescriptionActivity"
             android:screenOrientation="portrait"/>
     </application>
-
 </manifest>

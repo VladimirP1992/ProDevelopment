@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Dictionary</string>
+    <string name="app_name">ProDevelopment</string>
     <string name="error_stub">Error</string>
     <string name="reload_button">Reload</string>
     <string name="undefined_error">Undefined error</string>
@@ -16,4 +16,5 @@
     </string>
     <string name="dialog_tittle_sorry">Sorry</string>
     <string name="menu_title_history">History</string>
+    <string name="title_historyscreenfeature">History Screen Feature</string>
 </resources>

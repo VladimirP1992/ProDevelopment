@@ -1,20 +1,20 @@
 package ru.geekbrains.prodevelopment.utils
 
-import ru.geekbrains.model.data.DataModel
+import ru.geekbrains.model.data.AppState
 import ru.geekbrains.model.data.Meanings
-import ru.geekbrains.model.data.SearchResult
+import ru.geekbrains.model.data.DataModel
 
-fun parseOnlineSearchResults(data: DataModel): DataModel {
-    return DataModel.Success(mapResult(data, true))
+fun parseOnlineSearchResults(data: AppState): AppState {
+    return AppState.Success(mapResult(data, true))
 }
 
 private fun mapResult(
-    data: DataModel,
+    data: AppState,
     isOnline: Boolean
-): List<SearchResult> {
-    val newSearchResults = arrayListOf<SearchResult>()
+): List<DataModel> {
+    val newSearchResults = arrayListOf<DataModel>()
     when (data) {
-        is DataModel.Success -> {
+        is AppState.Success -> {
             getSuccessResultData(data, isOnline, newSearchResults)
         }
     }
@@ -22,11 +22,11 @@ private fun mapResult(
 }
 
 private fun getSuccessResultData(
-    data: DataModel.Success,
+    data: AppState.Success,
     isOnline: Boolean,
-    newDataModels: ArrayList<SearchResult>
+    newDataModels: ArrayList<DataModel>
 ) {
-    val dataModels: List<SearchResult> = data.data as List<SearchResult>
+    val dataModels: List<DataModel> = data.data as List<DataModel>
     if (dataModels.isNotEmpty()) {
         if (isOnline) {
             for (searchResult in dataModels) {
@@ -34,15 +34,15 @@ private fun getSuccessResultData(
             }
         } else {
             for (searchResult in dataModels) {
-                newDataModels.add(SearchResult(searchResult.text, arrayListOf()))
+                newDataModels.add(DataModel(searchResult.text, arrayListOf()))
             }
         }
     }
 }
 
 private fun parseOnlineResult(
-    dataModel: SearchResult,
-    newDataModels: ArrayList<SearchResult>
+    dataModel: DataModel,
+    newDataModels: ArrayList<DataModel>
 ) {
     if (!dataModel.text.isNullOrBlank() && !dataModel.meanings.isNullOrEmpty()) {
         val newMeanings = arrayListOf<Meanings>()
@@ -52,7 +52,7 @@ private fun parseOnlineResult(
             }
         }
         if (newMeanings.isNotEmpty()) {
-            newDataModels.add(SearchResult(dataModel.text, newMeanings))
+            newDataModels.add(DataModel(dataModel.text, newMeanings))
         }
     }
 }

@@ -6,14 +6,14 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.geekbrains.model.data.SearchResult
+import ru.geekbrains.model.data.DataModel
 import ru.geekbrains.repository.api.ApiService
 import ru.geekbrains.repository.api.BaseInterceptor
 
 class RetrofitImplementation :
-    DataSource<List<SearchResult>> {
+    DataSource<List<DataModel>> {
 
-    override suspend fun getData(word: String): List<SearchResult> {
+    override suspend fun getData(word: String): List<DataModel> {
         return getService(BaseInterceptor.interceptor).searchAsync(word).await()
     }
 

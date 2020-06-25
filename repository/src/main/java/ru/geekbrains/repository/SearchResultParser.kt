@@ -1,24 +1,24 @@
 package ru.geekbrains.repository
 
+import ru.geekbrains.model.data.AppState
 import ru.geekbrains.model.data.DataModel
-import ru.geekbrains.model.data.SearchResult
 import ru.geekbrains.repository.room.HistoryEntity
 
-fun mapHistoryEntityToSearchResult(list: List<HistoryEntity>): List<SearchResult> {
-    val searchResult = ArrayList<SearchResult>()
+fun mapHistoryEntityToSearchResult(list: List<HistoryEntity>): List<DataModel> {
+    val searchResult = ArrayList<DataModel>()
     if (!list.isNullOrEmpty()) {
         for (entity in list) {
             searchResult.add(
-                SearchResult(entity.word, null))
+                DataModel(entity.word, null))
         }
     }
     return searchResult
 }
 
-fun convertDataModelSuccessToEntity(dataModel: DataModel): HistoryEntity? {
-    return when (dataModel) {
-        is DataModel.Success -> {
-            val searchResult = dataModel.data
+fun convertDataModelSuccessToEntity(appState: AppState): HistoryEntity? {
+    return when (appState) {
+        is AppState.Success -> {
+            val searchResult = appState.data
             if (searchResult.isNullOrEmpty() || searchResult[0].text.isNullOrEmpty()) {
                 null
             } else {
